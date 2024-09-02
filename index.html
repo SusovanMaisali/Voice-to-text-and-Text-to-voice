@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech to Text and Text to Speech</title>
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .speech-to-text {
+            margin-top: 20px;
+        }
+
+        #recognizedText {
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+            font-style: italic;
+            color: #333;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>Speech to Text and Text to Speech</h1>
+
+        <textarea id="text" rows="5" placeholder="Type your text here..."></textarea>
+        <button id="speakBtn">Speak</button>
+
+        <div class="speech-to-text">
+            <button id="startRecBtn">Start Speech Recognition</button>
+            <p id="recognizedText">Speech will appear here...</p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('speakBtn').addEventListener('click', function () {
+            var text = document.getElementById('text').value;
+            var speech = new SpeechSynthesisUtterance();
+
+            speech.text = text;
+            speech.lang = 'en-US'; // Set the language
+
+            window.speechSynthesis.speak(speech);
+        });
+
+        document.getElementById('startRecBtn').addEventListener('click', function () {
+            var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+
+            recognition.lang = 'en-US'; // Set the language
+            recognition.interimResults = false; // Show results after speaking
+            recognition.maxAlternatives = 1;
+
+            recognition.onresult = function (event) {
+                var transcript = event.results[0][0].transcript;
+                document.getElementById('recognizedText').innerText = transcript;
+            };
+
+            recognition.onerror = function (event) {
+                console.error('Speech recognition error detected: ' + event.error);
+            };
+
+            recognition.onend = function () {
+                console.log('Speech recognition service disconnected');
+            };
+
+            recognition.start();
+        });
+
+    </script>
+</body>
+
+</html>
